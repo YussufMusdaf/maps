@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Prevalence in Kenya</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cancer Prevalence in Kenya</h1>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([0.0236, 37.9062], 6);
+        
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        
+        // Data for cancer cases in selected Kenya counties (imaginary data)
+        const selectedCounties = [
+            { name: "Kiambu", lat: -1.1748, lon: 36.8304, cases: 1800 },
+            { name: "Machakos", lat: -1.5177, lon: 37.2634, cases: 950 },
+            { name: "Nyeri", lat: -0.4169, lon: 36.9511, cases: 750 },
+            { name: "Kisii", lat: -0.6809, lon: 34.7717, cases: 680 },
+            { name: "Uasin Gishu", lat: 0.5143, lon: 35.2698, cases: 620 },
+            { name: "Kilifi", lat: -3.6305, lon: 39.8499, cases: 580 },
+            { name: "Bungoma", lat: 0.5636, lon: 34.5581, cases: 510 },
+            { name: "Murang'a", lat: -0.7949, lon: 37.1319, cases: 470 },
+            { name: "Kitui", lat: -1.3683, lon: 38.3106, cases: 420 },
+            { name: "Laikipia", lat: 0.3998, lon: 36.7916, cases: 380 },
+            { name: "Taita Taveta", lat: -3.3166, lon: 38.4833, cases: 340 },
+            { name: "Tana River", lat: -1.6495, lon: 39.6566, cases: 290 }
+        ];
+        
+        // Function to add proportional symbols
+        function addProportionalSymbols(data) {
+            const maxCases = Math.max(...data.map(county => county.cases));
+            const maxRadius = 50; // Maximum radius in pixels
+            
+            data.forEach(county => {
+                const radius = Math.sqrt(county.cases / maxCases) * maxRadius;
+                
+                L.circleMarker([county.lat, county.lon], {
+                    radius: radius,
+                    fillColor: "#ff0000",
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.6
+                }).addTo(map).bindPopup(`<strong>${county.name}</strong><br>${county.cases} cases`);
+            });
+        }
+        
+        // Add proportional symbols to the map
+        addProportionalSymbols(selectedCounties);
+    </script>
+</body>
+</html>
